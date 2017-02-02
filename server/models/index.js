@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+const { pascalize } = require('humps');
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -27,7 +28,7 @@ fs
     (file.slice(-3) === '.js'))
   .forEach((file) => {
     const model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
+    db[pascalize(model.name)] = model;
   });
 
 Object.keys(db).forEach((modelName) => {
