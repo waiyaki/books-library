@@ -4,7 +4,8 @@ import {
 
 import { Book, Author, Genre } from '../models';
 import { BookType, GenreType, AuthorType, NodeInterface } from './types';
-import { getNodeById } from './loaders';
+import * as loaders from './loaders';
+import * as mutations from './mutations';
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
@@ -36,15 +37,23 @@ const RootQuery = new GraphQLObjectType({
         },
       },
       resolve(source, args) {
-        return getNodeById(args.id);
+        return loaders.getNodeById(args.id);
       },
     },
   }),
 });
 
+const RootMutation = new GraphQLObjectType({
+  name: 'RootMutation',
+  description: 'The root mutation',
+  fields: () => ({
+    ...mutations,
+  }),
+});
 
 const Schema = new GraphQLSchema({
   query: RootQuery,
+  mutation: RootMutation,
 });
 
 export default Schema;
