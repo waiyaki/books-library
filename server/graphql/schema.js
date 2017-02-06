@@ -1,9 +1,10 @@
 import {
-  GraphQLSchema, GraphQLObjectType, GraphQLList,
+  GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLID,
  } from 'graphql';
 
 import { Book, Author, Genre } from '../models';
-import { BookType, GenreType, AuthorType } from './types';
+import { BookType, GenreType, AuthorType, NodeInterface } from './types';
+import { getNodeById } from './loaders';
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
@@ -25,6 +26,17 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(GenreType),
       resolve() {
         return Genre.all();
+      },
+    },
+    node: {
+      type: NodeInterface,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      resolve(source, args) {
+        return getNodeById(args.id);
       },
     },
   }),
