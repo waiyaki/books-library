@@ -1,11 +1,13 @@
+const cuid = require('cuid');
+
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable('genres', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(25),
+        defaultValue: () => cuid(),
       },
       name: {
         type: Sequelize.STRING(64),

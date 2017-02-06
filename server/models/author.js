@@ -1,4 +1,11 @@
+import cuid from 'cuid';
+
 export const schema = dataTypes => ({
+  id: {
+    type: dataTypes.STRING(25),
+    primaryKey: true,
+    defaultValue: () => cuid(),
+  },
   name: {
     type: dataTypes.STRING(64),
     allowNull: false,

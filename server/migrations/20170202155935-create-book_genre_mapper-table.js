@@ -9,7 +9,7 @@ module.exports = {
     */
     return queryInterface.createTable('book_genre_mapper', {
       bookId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(25),
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         references: {
@@ -19,7 +19,7 @@ module.exports = {
         },
       },
       genreId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(25),
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         references: {

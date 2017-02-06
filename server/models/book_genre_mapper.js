@@ -1,9 +1,9 @@
 export const schema = dataTypes => ({
   genreId: {
-    type: dataTypes.INTEGER,
+    type: dataTypes.STRING(25),
   },
   bookId: {
-    type: dataTypes.INTEGER,
+    type: dataTypes.STRING(25),
   },
 });
 
