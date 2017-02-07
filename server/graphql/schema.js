@@ -1,10 +1,10 @@
 import {
-  GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLID,
+  GraphQLSchema, GraphQLObjectType, GraphQLList,
  } from 'graphql';
 
 import { Book, Author, Genre } from '../models';
-import { BookType, GenreType, AuthorType, NodeInterface } from './types';
-import * as loaders from './loaders';
+import { BookType, GenreType, AuthorType, NodeField } from './types';
+
 import * as mutations from './mutations';
 
 const RootQuery = new GraphQLObjectType({
@@ -14,7 +14,9 @@ const RootQuery = new GraphQLObjectType({
     allBooks: {
       type: new GraphQLList(BookType),
       resolve() {
-        return Book.all();
+        return Book.findAll({
+          include: [Author, Genre],
+        });
       },
     },
     allAuthors: {
@@ -29,17 +31,7 @@ const RootQuery = new GraphQLObjectType({
         return Genre.all();
       },
     },
-    node: {
-      type: NodeInterface,
-      args: {
-        id: {
-          type: new GraphQLNonNull(GraphQLID),
-        },
-      },
-      resolve(source, args) {
-        return loaders.getNodeById(args.id);
-      },
-    },
+    node: NodeField,
   }),
 });
 
@@ -53,7 +45,6 @@ const RootMutation = new GraphQLObjectType({
 
 const Schema = new GraphQLSchema({
   query: RootQuery,
-  mutation: RootMutation,
 });
 
 export default Schema;

@@ -1,61 +1,38 @@
 import { pascalize } from 'humps';
 import {
-  GraphQLObjectType, GraphQLString, GraphQLNonNull, GraphQLID,
-  GraphQLInterfaceType,
+  GraphQLObjectType, GraphQLString, GraphQLNonNull,
 } from 'graphql';
 
-import { dbIdToNodeId, extractTableName } from './loaders';
+import {
+  nodeDefinitions, globalIdField, connectionDefinitions, connectionArgs,
+  connectionFromArray,
+} from 'graphql-relay';
+import { extractTableName, getNodeById } from './loaders';
 
 
-export const NodeInterface = new GraphQLInterfaceType({
-  name: 'Node',
-  fields: () => ({
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-    },
-  }),
+const { nodeInterface: NodeInterface, nodeField } = nodeDefinitions(
+  // The first method resolves an id to it's object.
+  getNodeById,
+
+  // The second method resolves an object that implements a node to it's type.
   // eslint-disable-next-line no-use-before-define
-  resolveType: source => nameToTypeMapper[pascalize(extractTableName(source))],
-});
+  obj => nameToTypeMapper[pascalize(extractTableName(obj))],
+);
 
-export const BookType = new GraphQLObjectType({
-  name: 'Book',
-  description: 'A book representation',
-  interfaces: [NodeInterface],
-  fields: () => ({
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-      resolve: dbIdToNodeId,
-    },
-    title: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
-    summary: {
-      type: GraphQLString,
-    },
-    isbn: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
-    createdAt: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
-    updatedAt: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
-  }),
-});
+export const NodeField = nodeField;
 
+/**
+ * Define a basic Author type.
+ */
 export const AuthorType = new GraphQLObjectType({
   name: 'Author',
   description: 'Representation of an author',
   interfaces: [NodeInterface],
   fields: () => ({
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-      resolve: dbIdToNodeId,
-    },
+    id: globalIdField(),
     name: {
       type: new GraphQLNonNull(GraphQLString),
+      description: 'Name of the author',
     },
     createdAt: {
       type: new GraphQLNonNull(GraphQLString),
@@ -66,20 +43,29 @@ export const AuthorType = new GraphQLObjectType({
   }),
 });
 
+/**
+ * Define the connection between a Book and it's Authors
+ */
+export const { connectionType: AuthorConnection } = connectionDefinitions({
+  nodeType: AuthorType,
+});
+
+/**
+ * Define a basic Genre type.
+ */
 export const GenreType = new GraphQLObjectType({
   name: 'Genre',
   description: 'Representation of a book genre',
   interfaces: [NodeInterface],
   fields: () => ({
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-      resolve: dbIdToNodeId,
-    },
+    id: globalIdField(),
     name: {
       type: new GraphQLNonNull(GraphQLString),
+      description: 'Name of the Genre',
     },
     description: {
       type: GraphQLString,
+      description: 'Short description of this Genre',
     },
     createdAt: {
       type: new GraphQLNonNull(GraphQLString),
@@ -89,6 +75,60 @@ export const GenreType = new GraphQLObjectType({
     },
   }),
 });
+
+/**
+ * Define the connection between a Book and it's Genres.
+ */
+export const { connectionType: GenreConnection } = connectionDefinitions({
+  nodeType: GenreType,
+});
+
+/**
+ * Define a basic book type.
+ */
+export const BookType = new GraphQLObjectType({
+  name: 'Book',
+  description: 'A book representation',
+  interfaces: [NodeInterface],
+  fields: () => ({
+    id: globalIdField(),
+    title: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Title of the book',
+    },
+    summary: {
+      type: GraphQLString,
+      description: 'Summary of the books contents',
+    },
+    isbn: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Unique ISBN number of the book',
+    },
+    createdAt: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    updatedAt: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    genres: {
+      type: GenreConnection,
+      description: 'The genres this book is classified under',
+      args: connectionArgs,
+      resolve(book, args) {
+        return connectionFromArray(book.dataValues.genres, args);
+      },
+    },
+    authors: {
+      type: AuthorConnection,
+      description: 'The author(s) who have written this book',
+      args: connectionArgs,
+      resolve(book, args) {
+        return connectionFromArray(book.dataValues.authors, args);
+      },
+    },
+  }),
+});
+
 
 const types = [BookType, AuthorType, GenreType];
 
