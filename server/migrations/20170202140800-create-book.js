@@ -16,6 +16,7 @@ module.exports = {
       isbn: {
         type: Sequelize.STRING(13),
         allowNull: false,
+        unique: true,
       },
       summary: {
         type: Sequelize.STRING(255),
