@@ -39,12 +39,15 @@ const RootMutation = new GraphQLObjectType({
   name: 'RootMutation',
   description: 'The root mutation',
   fields: () => ({
-    ...mutations,
+    createGenre: mutations.createGenreMutation,
+    createAuthor: mutations.createAuthorMutation,
+    createBook: mutations.createBookMutation,
   }),
 });
 
 const Schema = new GraphQLSchema({
   query: RootQuery,
+  mutation: RootMutation,
 });
 
 export default Schema;

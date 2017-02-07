@@ -1,14 +1,17 @@
 import {
   GraphQLNonNull, GraphQLString, GraphQLList,
 } from 'graphql';
+import { mutationWithClientMutationId } from 'graphql-relay';
+import { composeP } from 'ramda';
 
 import { BookType, GenreType, AuthorType } from './types';
-import { Book, Genre, Author, sequelize } from '../models';
-import { splitNodeId } from './loaders';
+import { Book, Genre, Author } from '../models';
+import * as loaders from './loaders';
 
-export const createGenre = {
-  type: GenreType,
-  args: {
+
+export const createGenreMutation = mutationWithClientMutationId({
+  name: 'CreateGenre',
+  inputFields: {
     name: {
       type: new GraphQLNonNull(GraphQLString),
     },
@@ -16,26 +19,42 @@ export const createGenre = {
       type: GraphQLString,
     },
   },
-  resolve(source, args) {
-    return Genre.create(args);
+  outputFields: {
+    genre: {
+      type: GenreType,
+      resolve(genre) {
+        return genre;
+      },
+    },
   },
-};
+  mutateAndGetPayload({ name, description }) {
+    return loaders.create(Genre, { name, description });
+  },
+});
 
-export const createAuthor = {
-  type: AuthorType,
-  args: {
+export const createAuthorMutation = mutationWithClientMutationId({
+  name: 'CreateAuthor',
+  inputFields: {
     name: {
       type: new GraphQLNonNull(GraphQLString),
     },
   },
-  resolve(source, args) {
-    return Author.create(args);
+  outputFields: {
+    author: {
+      type: AuthorType,
+      resolve(author) {
+        return author;
+      },
+    },
   },
-};
+  mutateAndGetPayload({ name }) {
+    return loaders.create(Author, { name });
+  },
+});
 
-export const createBook = {
-  type: BookType,
-  args: {
+export const createBookMutation = mutationWithClientMutationId({
+  name: 'CreateBook',
+  inputFields: {
     title: {
       type: new GraphQLNonNull(GraphQLString),
     },
@@ -52,44 +71,23 @@ export const createBook = {
       type: new GraphQLList(GraphQLString),
     },
   },
-  resolve: async (source, args) => {
-    const getRawSequelizeQuery = (ids, model) => {
-      const getRawId = id => splitNodeId(id).slice(-1)[0];
-      const quote = string => `'${string}'`;
-      const rawIds = ids.map(getRawId).map(quote).join(',');
-
-      const { plural, singular } = model.options.name;
-
-      const query = `select * from ${plural} as ${singular} where ${singular}.id in (${rawIds})`;
-
-      return sequelize.query(query, { model });
-    };
-
-
-    const { authorIds, genreIds, ...fields } = args;
-    const book = await Book.create(fields);
-
-    try {
-      if (authorIds) {
-        const authors = await getRawSequelizeQuery(authorIds, Author);
-        book.setAuthors(authors);
-      }
-    } catch (e) {
-      // console.log('Error adding authors', e);
-    }
-
-    try {
-      if (genreIds) {
-        const genres = await getRawSequelizeQuery(genreIds, Genre);
-        book.setGenres(genres);
-      }
-    } catch (e) {
-      // console.log('Error adding genres: ', e);
-    }
-
-    return Book.findById(book.id, {
-      include: [Genre, Author],
-    });
+  outputFields: {
+    book: {
+      type: BookType,
+      resolve(book) {
+        return book;
+      },
+    },
   },
-};
-
+  mutateAndGetPayload({ title, summary, isbn, authorIds, genreIds }) {
+    return loaders.create(
+      Book,
+      { title, summary, isbn },
+      composeP(
+        book => loaders.getNodeById({ modelName: 'Book', id: book.id }),
+        loaders.setAuthors(authorIds),
+        loaders.setGenres(genreIds),
+      ),
+    );
+  },
+});

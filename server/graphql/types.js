@@ -5,14 +5,17 @@ import {
 
 import {
   nodeDefinitions, globalIdField, connectionDefinitions, connectionArgs,
-  connectionFromArray,
+  connectionFromArray, fromGlobalId,
 } from 'graphql-relay';
 import { extractTableName, getNodeById } from './loaders';
 
 
 const { nodeInterface: NodeInterface, nodeField } = nodeDefinitions(
   // The first method resolves an id to it's object.
-  getNodeById,
+  (nodeId) => {
+    const { type: modelName, id } = fromGlobalId(nodeId);
+    return getNodeById({ modelName, id });
+  },
 
   // The second method resolves an object that implements a node to it's type.
   // eslint-disable-next-line no-use-before-define
