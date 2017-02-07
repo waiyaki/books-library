@@ -42,6 +42,8 @@ const RootMutation = new GraphQLObjectType({
     createGenre: mutations.createGenreMutation,
     createAuthor: mutations.createAuthorMutation,
     createBook: mutations.createBookMutation,
+    updateAuthor: mutations.updateAuthorMutation,
+    updateGenre: mutations.updateGenreMutation,
   }),
 });
 

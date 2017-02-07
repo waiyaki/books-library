@@ -75,3 +75,14 @@ export const setGenres = genreIds => async (book) => {
   return book;
 };
 
+
+export async function update(
+  model = requireParam('model'),
+  { id = requireParam('id'), ...fields },
+) {
+  const object = await model.findById(id);
+  await object.update(fields, {
+    fields: Object.keys(fields),
+  });
+  return object;
+}

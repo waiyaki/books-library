@@ -1,7 +1,7 @@
 import {
   GraphQLNonNull, GraphQLString, GraphQLList,
 } from 'graphql';
-import { mutationWithClientMutationId } from 'graphql-relay';
+import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
 import { composeP } from 'ramda';
 
 import { BookType, GenreType, AuthorType } from './types';
@@ -89,5 +89,65 @@ export const createBookMutation = mutationWithClientMutationId({
         loaders.setGenres(genreIds),
       ),
     );
+  },
+});
+
+// UPDATE MUTATIONS
+
+/**
+ * Update author details
+ */
+export const updateAuthorMutation = mutationWithClientMutationId({
+  name: 'UpdateAuthor',
+  inputFields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    name: {
+      type: GraphQLString,
+    },
+  },
+  outputFields: {
+    author: {
+      type: AuthorType,
+      resolve(author) {
+        return author;
+      },
+    },
+  },
+  mutateAndGetPayload({ id, name }) {
+    const { id: objId } = fromGlobalId(id);
+    return loaders.update(Author, { id: objId, name });
+  },
+});
+
+
+/**
+ * Update Genre details
+ */
+export const updateGenreMutation = mutationWithClientMutationId({
+  name: 'UpdateGenre',
+  inputFields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    name: {
+      type: GraphQLString,
+    },
+    description: {
+      type: GraphQLString,
+    },
+  },
+  outputFields: {
+    genre: {
+      type: GenreType,
+      resolve(genre) {
+        return genre;
+      },
+    },
+  },
+  mutateAndGetPayload({ id, name, description }) {
+    const { id: objId } = fromGlobalId(id);
+    return loaders.update(Genre, { id: objId, name, description });
   },
 });
