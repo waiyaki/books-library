@@ -2,13 +2,13 @@ import { pascalize } from 'humps';
 import {
   GraphQLObjectType, GraphQLString, GraphQLNonNull,
 } from 'graphql';
-
 import {
   nodeDefinitions, globalIdField, connectionDefinitions, connectionArgs,
   connectionFromArray, fromGlobalId,
 } from 'graphql-relay';
-import { extractTableName, getNodeById } from './loaders';
 
+import { getNodeById } from './loaders';
+import { extractTableName } from './helpers';
 
 const { nodeInterface: NodeInterface, nodeField } = nodeDefinitions(
   // The first method resolves an id to it's object.

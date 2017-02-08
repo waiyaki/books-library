@@ -1,27 +1,19 @@
+import { composeP } from 'ramda';
 import { fromGlobalId } from 'graphql-relay';
+import { pascalize } from 'humps';
 
 import models from '../models';
+import { setAuthors, setGenres, requireParam } from './helpers';
 
-
-const { Author, Genre } = models;
-
-export const extractTableName = source => source.$modelOptions.name.singular;
-
-
-export const getNodeById = async ({ modelName, id }) => {
+export const getNodeById = ({ modelName, id }) => {
   const query = {};
 
   if (modelName === 'Book') {
-    query.include = [Author, Genre];
+    query.include = [models.Author, models.Genre];
   }
 
   return models[modelName].findById(id, query);
 };
-
-
-function requireParam(param) {
-  throw new Error(`Required param ${param} was not provided.`);
-}
 
 
 export async function create(
@@ -37,52 +29,42 @@ export async function create(
   return object;
 }
 
-const getRawSequelizeQuery = (ids, model) => {
-  const getRawId = id => fromGlobalId(id).id;
-  const quote = string => `'${string}'`;
-  const rawIds = ids.map(getRawId).map(quote).join(',');
-
-  const { plural, singular } = model.options.name;
-
-  const query = `select * from ${plural} as ${singular} where ${singular}.id in (${rawIds})`;
-
-  return models.sequelize.query(query, { model });
-};
-
-
-export const setAuthors = authorIds => async (book) => {
-  if (authorIds) {
-    try {
-      const authors = await getRawSequelizeQuery(authorIds, Author);
-      await book.setAuthors(authors);
-    } catch (e) {
-      // Noop
-    }
-  }
-  return book;
-};
-
-
-export const setGenres = genreIds => async (book) => {
-  if (genreIds) {
-    try {
-      const genres = await getRawSequelizeQuery(genreIds, Genre);
-      await book.setGenres(genres);
-    } catch (e) {
-      // Noop
-    }
-  }
-  return book;
-};
-
-
 export async function update(
   model = requireParam('model'),
   { id = requireParam('id'), ...fields },
+  afterUpdate = null,
 ) {
-  const object = await model.findById(id);
+  const { id: objId } = fromGlobalId(id);
+  const object = await getNodeById({
+    modelName: pascalize(model.name),
+    id: objId,
+  });
   await object.update(fields, {
     fields: Object.keys(fields),
   });
+
+  if (afterUpdate) {
+    return afterUpdate(object);
+  }
+
   return object;
 }
+
+/**
+ * updateRelationsAndRefetch : ({ genreIds, authorIds }) -> book -> Promise book
+ *
+ * Update a book's relations to authors and genres and refetch the book
+ * from the db after the update to refresh data.
+ */
+export const updateRelationsAndRefetch = ({ genreIds, authorIds }) =>
+  composeP(
+    (book) => {
+      // Only hit the db if book was updated by either setAuthors or setGenres
+      if (genreIds || authorIds) {
+        return getNodeById({ modelName: 'Book', id: book.id });
+      }
+      return book;
+    },
+    setAuthors(authorIds),
+    setGenres(genreIds),
+  );

@@ -1,8 +1,7 @@
 import {
   GraphQLNonNull, GraphQLString, GraphQLList,
 } from 'graphql';
-import { mutationWithClientMutationId, fromGlobalId } from 'graphql-relay';
-import { composeP } from 'ramda';
+import { mutationWithClientMutationId } from 'graphql-relay';
 
 import { BookType, GenreType, AuthorType } from './types';
 import { Book, Genre, Author } from '../models';
@@ -83,11 +82,7 @@ export const createBookMutation = mutationWithClientMutationId({
     return loaders.create(
       Book,
       { title, summary, isbn },
-      composeP(
-        book => loaders.getNodeById({ modelName: 'Book', id: book.id }),
-        loaders.setAuthors(authorIds),
-        loaders.setGenres(genreIds),
-      ),
+      loaders.updateRelationsAndRefetch({ authorIds, genreIds }),
     );
   },
 });
@@ -116,8 +111,7 @@ export const updateAuthorMutation = mutationWithClientMutationId({
     },
   },
   mutateAndGetPayload({ id, name }) {
-    const { id: objId } = fromGlobalId(id);
-    return loaders.update(Author, { id: objId, name });
+    return loaders.update(Author, { id, name });
   },
 });
 
@@ -147,7 +141,59 @@ export const updateGenreMutation = mutationWithClientMutationId({
     },
   },
   mutateAndGetPayload({ id, name, description }) {
-    const { id: objId } = fromGlobalId(id);
-    return loaders.update(Genre, { id: objId, name, description });
+    return loaders.update(Genre, { id, name, description });
+  },
+});
+
+export const updateBookMutation = mutationWithClientMutationId({
+  name: 'UpdateBook',
+  inputFields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    title: {
+      type: GraphQLString,
+    },
+    summary: {
+      type: GraphQLString,
+    },
+    isbn: {
+      type: GraphQLString,
+    },
+    authorIds: {
+      type: new GraphQLList(GraphQLString),
+      description: [
+        'Author IDs for the authors to add to the book.',
+        'To remove some authors, pass in the IDs of all the authors',
+        'except the ones you want to remove.',
+        'Pass in an empty array to remove all authors.',
+        'No changes are effected if this field is undefined.',
+      ].join(' '),
+    },
+    genreIds: {
+      type: new GraphQLList(GraphQLString),
+      description: [
+        'Genre IDs for the genres to add to the book.',
+        'To remove some genres, pass in the IDs of all the genres',
+        'except the ones you want to remove.',
+        'Pass in an empty array to remove all genres.',
+        'No changes are effected if this field is undefined.',
+      ].join(' '),
+    },
+  },
+  outputFields: {
+    book: {
+      type: BookType,
+      resolve(book) {
+        return book;
+      },
+    },
+  },
+  mutateAndGetPayload({ id, authorIds, genreIds, ...rest }) {
+    return loaders.update(
+      Book,
+      { id, ...rest },
+      loaders.updateRelationsAndRefetch({ authorIds, genreIds }),
+    );
   },
 });
