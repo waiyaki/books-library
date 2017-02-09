@@ -9,6 +9,8 @@
     "start": "NODE_ENV=production node ./bin/www",
     "prestart:dev": "npm run db:migrate",
     "start:dev": "NODE_ENV=development nodemon ./bin/www",
+    "seed:generate": "node -r 'babel-register' ./server/seeders/generate.js",
+    "seed:seed": "node -r 'babel-register' ./server/seeders/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,7 +23,9 @@
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^3.0.2",
-    "eslint-plugin-react": "^6.9.0"
+    "eslint-plugin-react": "^6.9.0",
+    "faker": "^3.1.0",
+    "sequelize-fixtures": "^0.5.6"
   },
   "dependencies": {
     "babel-polyfill": "^6.22.0",
@@ -35,7 +39,6 @@
     "express-graphql": "^0.6.3",
     "graphql": "^0.9.1",
     "graphql-relay": "^0.5.1",
-    "graphql-sequelize": "^5.1.0",
     "humps": "^2.0.0",
     "lodash": "^4.17.4",
     "morgan": "^1.7.0",
