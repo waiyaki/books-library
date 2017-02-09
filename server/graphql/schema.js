@@ -1,9 +1,12 @@
 import {
-  GraphQLSchema, GraphQLObjectType, GraphQLList,
+  GraphQLSchema, GraphQLObjectType,
  } from 'graphql';
 
+import { connectionArgs, connectionFromPromisedArray } from 'graphql-relay';
 import { Book, Author, Genre } from '../models';
-import { BookType, GenreType, AuthorType, NodeField } from './types';
+import {
+  NodeField, BookConnection, AuthorConnection, GenreConnection,
+} from './types';
 
 import * as mutations from './mutations';
 
@@ -12,23 +15,26 @@ const RootQuery = new GraphQLObjectType({
   description: 'The root query',
   fields: () => ({
     allBooks: {
-      type: new GraphQLList(BookType),
-      resolve() {
-        return Book.findAll({
+      type: BookConnection,
+      args: connectionArgs,
+      resolve(_, args) {
+        return connectionFromPromisedArray(Book.findAll({
           include: [Author, Genre],
-        });
+        }), args);
       },
     },
     allAuthors: {
-      type: new GraphQLList(AuthorType),
-      resolve() {
-        return Author.all();
+      type: AuthorConnection,
+      args: connectionArgs,
+      resolve(_, args) {
+        return connectionFromPromisedArray(Author.all(), args);
       },
     },
     allGenres: {
-      type: new GraphQLList(GenreType),
-      resolve() {
-        return Genre.all();
+      type: GenreConnection,
+      args: connectionArgs,
+      resolve(_, args) {
+        return connectionFromPromisedArray(Genre.all(), args);
       },
     },
     node: NodeField,

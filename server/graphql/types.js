@@ -49,7 +49,10 @@ export const AuthorType = new GraphQLObjectType({
 /**
  * Define the connection between a Book and it's Authors
  */
-export const { connectionType: AuthorConnection } = connectionDefinitions({
+export const {
+  connectionType: AuthorConnection,
+  edgeType: AuthorEdge,
+} = connectionDefinitions({
   nodeType: AuthorType,
 });
 
@@ -82,7 +85,10 @@ export const GenreType = new GraphQLObjectType({
 /**
  * Define the connection between a Book and it's Genres.
  */
-export const { connectionType: GenreConnection } = connectionDefinitions({
+export const {
+  connectionType: GenreConnection,
+  edgeType: GenreEdge,
+} = connectionDefinitions({
   nodeType: GenreType,
 });
 
@@ -132,6 +138,12 @@ export const BookType = new GraphQLObjectType({
   }),
 });
 
+export const {
+  connectionType: BookConnection,
+  edgeType: BookEdge,
+} = connectionDefinitions({
+  nodeType: BookType,
+});
 
 const types = [BookType, AuthorType, GenreType];
 
