@@ -6,9 +6,9 @@
   "scripts": {
     "db:migrate": "sequelize db:migrate",
     "prestart": "npm run db:migrate",
-    "start": "NODE_ENV=production node ./bin/www",
+    "start": "nf start",
     "prestart:dev": "npm run db:migrate",
-    "start:dev": "NODE_ENV=development nodemon ./bin/www",
+    "start:dev": "NODE_ENV=development nodemon ./bin/www -w server",
     "seed:generate": "node -r 'babel-register' ./server/seeders/generate.js",
     "seed:seed": "node -r 'babel-register' ./server/seeders/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
