@@ -5,14 +5,14 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React/Relay</h2>
+      <div className="container">
+        <div className="row align-items-center">
+          <div className="col">
+            <h1 className="display-4 text-center">Bookeeper</h1>
+            <hr />
+          </div>
+          {this.props.children}
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
       </div>
     );
   }
