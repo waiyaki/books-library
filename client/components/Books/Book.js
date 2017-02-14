@@ -2,6 +2,9 @@ import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 
 import './Book.css';
+import AuthorLabelsContainer from '../Authors/AuthorLabels';
+import GenreLabelsContainer from '../Genres/GenreLabels';
+
 
 export function Book({ book }) {
   return (
@@ -10,6 +13,11 @@ export function Book({ book }) {
         <h4 className="card-title text-center">{book.title}</h4>
         <hr />
         <p className="card-text">{book.summary}</p>
+      </div>
+      <div className="card-footer text-muted">
+        <AuthorLabelsContainer authors={book.authors} />
+        <hr />
+        <GenreLabelsContainer genres={book.genres} />
       </div>
     </div>
   );
@@ -20,18 +28,27 @@ Book.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     summary: PropTypes.string,
-    authors: PropTypes.array,
-    genres: PropTypes.array,
+    authors: PropTypes.object,
+    genres: PropTypes.object,
   }).isRequired,
 };
-export default Relay.createContainer(Book, {
+
+const BookContainer = Relay.createContainer(Book, {
   fragments: {
     book: () => Relay.QL`
       fragment on Book {
         id,
         title,
-        summary
+        summary,
+        authors(first: 5) {
+          ${AuthorLabelsContainer.getFragment('authors')}
+        }
+        genres(first: 5) {
+          ${GenreLabelsContainer.getFragment('genres')}
+        }
       }
     `,
   },
 });
+
+export default BookContainer;

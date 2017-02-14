@@ -5,7 +5,7 @@ import useRelay from 'react-router-relay';
 
 import App from './App';
 import Home from './components/Home';
-import BooksList from './components/BooksList';
+import BooksListContainer from './components/Books/BooksList';
 
 import BooksQueries from './relay/queries/BooksQueries';
 
@@ -17,7 +17,7 @@ export default () => (
   >
     <Route path="/" component={App}>
       <IndexRoute component={Home} />
-      <Route path="/books" component={BooksList} queries={BooksQueries} />
+      <Route path="/books" component={BooksListContainer} queries={BooksQueries} />
     </Route>
   </Router>
 );
