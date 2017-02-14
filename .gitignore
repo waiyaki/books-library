@@ -39,3 +39,4 @@ node_modules
 # Finder stuff
 .DS_Store
 fixtures.json
+schema.graphql

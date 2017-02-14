@@ -11,7 +11,8 @@
     "start:dev": "NODE_ENV=development nodemon ./bin/www -w server",
     "seed:generate": "node -r 'babel-register' ./server/seeders/generate.js",
     "seed:seed": "node -r 'babel-register' ./server/seeders/seed.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-schema": "node -r 'babel-register' ./server/graphql/updateSchema.js"
   },
   "keywords": [],
   "author": "",
@@ -30,8 +31,9 @@
   "dependencies": {
     "babel-polyfill": "^6.22.0",
     "babel-preset-latest": "^6.22.0",
-    "babel-preset-stage-2": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
     "babel-register": "^6.22.0",
+    "babel-relay-plugin": "^0.11.0",
     "babel-runtime": "^6.22.0",
     "body-parser": "^1.16.0",
     "cuid": "^1.3.8",
