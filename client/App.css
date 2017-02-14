@@ -1,3 +1,8 @@
 .container {
   margin-top: 25px;
 }
+
+.link-index, .link-index:hover, .link-index:active, .link-index:visited, .link-index:focus {
+  text-decoration: none;
+  color: inherit;
+}

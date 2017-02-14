@@ -6,6 +6,9 @@ import BookContainer from './Book';
 export function BooksList(props) {
   return (
     <div className="col-sm-12">
+      <h2 className="text-center section-heading">
+        <span className="section-heading-underline">Books</span>
+      </h2>
       <div className="card-columns resource-container">
         {props.books.edges.map(({ node }) => (
           <BookContainer book={node} key={node.__dataID__} />
