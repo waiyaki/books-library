@@ -10,5 +10,5 @@ export default function Home() {
         <Link to="/genres" className="list-group-item list-group-item-action">Genres</Link>
       </div>
     </div>
-  )
+  );
 }

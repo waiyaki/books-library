@@ -6,7 +6,16 @@ import bodyParser from 'body-parser';
 import favicon from 'serve-favicon';
 import graphqlHTTP from 'express-graphql';
 
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+import webpackConfig from './webpack.config';
+
+
 import Schema from './server/graphql/schema';
+
+const env = process.env.NODE_ENV;
+const publicPath = path.resolve(__dirname, './client/dist');
 
 const app = express();
 
@@ -20,6 +29,20 @@ app.use('/graphql', graphqlHTTP({
   schema: Schema,
   graphiql: true,
 }));
+
+// Configure webpack hot reloading
+if (env === 'development') {
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler, {
+    noInfo: true,
+    chunks: false,
+    color: true,
+    publicPath: webpackConfig.output.publicPath,
+  }));
+  app.use(webpackHotMiddleware(compiler));
+} else {
+  app.use(express.static(publicPath));
+}
 
 app.use('*', (req, res) => res.status(400).send({
   message: 'All API requests are served at "/graphql" endpoint.',

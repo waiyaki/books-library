@@ -6,7 +6,13 @@ plugins:
   - jsx-a11y
   - import
 
+env:
+  browser: true
+  node: true
+
 rules:
+  react/jsx-filename-extension: off
+
   no-underscore-dangle:
     - error
     - allow:
