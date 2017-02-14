@@ -1,41 +1,23 @@
-import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 
-import Labels from '../Common/Labels';
+import createLabelContainerFor from '../Common/createLabelContainerFor';
 
-export function AuthorLabels({ authors }) {
-  const authorItems = authors.edges.map(({ node }) => node);
-
-  return (
-    <Labels
-      items={authorItems}
-      labelName={{
-        singular: 'Author',
-        plural: 'Authors',
-      }}
-    />
-  );
-}
-
-AuthorLabels.propTypes = {
-  authors: PropTypes.shape({
-    edges: PropTypes.array,
-  }).isRequired,
-};
-
-const AuthorLabelsContainer = Relay.createContainer(AuthorLabels, {
-  fragments: {
-    authors: () => Relay.QL`
-      fragment on AuthorConnection {
-        edges {
-          node {
-            id,
-            name
-          }
-        }
+const getRelayQuery = () => Relay.QL`
+  fragment on AuthorConnection {
+    edges {
+      node {
+        id,
+        name
       }
-    `,
+    }
+  }
+`;
+
+export default createLabelContainerFor({
+  type: 'authors',
+  getRelayQuery,
+  labelName: {
+    singular: 'Author',
+    plural: 'Authors',
   },
 });
-
-export default AuthorLabelsContainer;
