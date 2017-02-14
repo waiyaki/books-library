@@ -7,9 +7,11 @@ import App from './App';
 import Home from './components/Home';
 import BooksListContainer from './components/Books/BooksList';
 import AuthorListContainer from './components/Authors/AuthorsList';
+import GenreListContainer from './components/Genres/GenresList';
 
 import BooksQueries from './relay/queries/BooksQueries';
 import AuthorQueries from './relay/queries/AuthorsQueries';
+import GenreQueries from './relay/queries/GenreQueries';
 
 export default () => (
   <Router
@@ -21,6 +23,7 @@ export default () => (
       <IndexRoute component={Home} />
       <Route path="/books" component={BooksListContainer} queries={BooksQueries} />
       <Route path="/authors" component={AuthorListContainer} queries={AuthorQueries} />
+      <Route path="/genres" component={GenreListContainer} queries={GenreQueries} />
     </Route>
   </Router>
 );
