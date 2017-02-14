@@ -1,5 +1,9 @@
 {
-  "presets": ["latest", "stage-2", "react"],
+  "presets": ["latest", "stage-2", "react", {
+    "plugins": [
+      "./build/babelRelayPlugin"
+    ]
+  }],
   "plugins": [
     "react-hot-loader/babel",
     ["transform-runtime", {

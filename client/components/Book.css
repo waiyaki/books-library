@@ -1,0 +1,11 @@
+.card {
+  margin-bottom: 1em;
+}
+
+.card-text {
+  overflow: scroll;
+}
+
+.card-title {
+  word-wrap: break-word;
+}

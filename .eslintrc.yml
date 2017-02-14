@@ -17,3 +17,4 @@ rules:
     - error
     - allow:
       - __tableName
+      - __dataID__

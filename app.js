@@ -40,12 +40,12 @@ if (env === 'development') {
     publicPath: webpackConfig.output.publicPath,
   }));
   app.use(webpackHotMiddleware(compiler));
-} else {
-  app.use(express.static(publicPath));
 }
 
-app.use('*', (req, res) => res.status(400).send({
-  message: 'All API requests are served at "/graphql" endpoint.',
-}));
+app.use(express.static(publicPath));
+
+app.get('*', (req, res) => res.sendFile(
+  path.resolve(publicPath, 'index.html'),
+));
 
 export default app;

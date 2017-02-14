@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
 import Routes from './routes';
+import './index.css';
 
 const mountNode = document.getElementById('root');
 
