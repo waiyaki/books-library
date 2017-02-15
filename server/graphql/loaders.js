@@ -3,7 +3,7 @@ import { fromGlobalId } from 'graphql-relay';
 import { pascalize } from 'humps';
 
 import models from '../models';
-import { setAuthors, setGenres, requireParam } from './helpers';
+import { setAuthors, setGenres, requireParam, findGenresWithAuthorId } from './helpers';
 
 export const getNodeById = ({ modelName, id }) => {
   const query = {};
@@ -68,3 +68,11 @@ export const updateRelationsAndRefetch = ({ genreIds, authorIds }) =>
     setAuthors(authorIds),
     setGenres(genreIds),
   );
+
+export function findGenres(args) {
+  if (args.authorId) {
+    return findGenresWithAuthorId(args.authorId);
+  }
+
+  return models.Genre.findAll();
+}

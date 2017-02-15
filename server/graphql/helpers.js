@@ -1,3 +1,4 @@
+import R from 'ramda';
 import { fromGlobalId } from 'graphql-relay';
 
 import models from '../models';
@@ -74,3 +75,59 @@ export const setGenres = genreIds => async (book) => {
   }
   return book;
 };
+
+
+const constructIncludeQuery = (model, includeAs, id = null) => {
+  const query = {
+    model,
+    as: includeAs,
+    through: {
+      attributes: [],
+    },
+  };
+
+  if (id) {
+    query.where = {
+      id: {
+        in: [id],
+      },
+    };
+  }
+
+  return query;
+};
+
+
+export function constructBookQuery(args) {
+  let { genreId, authorId } = args;
+  if (genreId) {
+    genreId = fromGlobalId(genreId).id;
+  }
+  if (authorId) {
+    authorId = fromGlobalId(authorId).id;
+  }
+
+  const query = {
+    include: [
+      constructIncludeQuery(models.Author, 'authors', authorId),
+      constructIncludeQuery(models.Genre, 'genres', genreId),
+    ],
+  };
+
+  return query;
+}
+
+
+export function findGenresWithAuthorId(authorId) {
+  const { id } = fromGlobalId(authorId);
+  return models.Book
+    .findAll({
+      include: [
+        constructIncludeQuery(models.Author, 'authors', id),
+        constructIncludeQuery(models.Genre, 'genres'),
+      ],
+    })
+    .then(R.reduce((genres, book) => [...genres, ...book.genres], []))
+    .then(R.map(R.prop('dataValues')))
+    .then(R.uniqWith(R.eqProps('id')));
+}
