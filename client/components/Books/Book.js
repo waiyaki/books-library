@@ -4,13 +4,15 @@ import Relay from 'react-relay';
 import './Book.css';
 import AuthorLabelsContainer from '../Authors/AuthorLabels';
 import GenreLabelsContainer from '../Genres/GenreLabels';
-
+import ResourceLink from '../Common/ResourceLink';
 
 export function Book({ book }) {
   return (
     <div className="card card-outline-primary">
       <div className="card-block">
-        <h4 className="card-title text-center">{book.title}</h4>
+        <ResourceLink to={`/books/${book.id}`}>
+          <h4 className="card-title text-center">{book.title}</h4>
+        </ResourceLink>
         <hr />
         <p className="card-text">{book.summary}</p>
       </div>

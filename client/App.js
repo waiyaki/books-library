@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router';
+
+import ResourceLink from './components/Common/ResourceLink';
 
 import './App.css';
 
@@ -8,9 +9,9 @@ export default function App(props) {
     <div className="container">
       <div className="row align-items-center">
         <div className="col">
-          <Link to="/" className="link-index">
+          <ResourceLink to="/">
             <h1 className="display-4 text-center">Bookeeper</h1>
-          </Link>
+          </ResourceLink>
           <hr />
         </div>
         {props.children}
