@@ -2,16 +2,14 @@ import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 
 import GenreContainer from './Genre';
+import ResourceContainer from '../Common/ResourceContainer';
 
 export function GenresList(props) {
   return (
-    <div className="col-sm-12">
-      <h2 className="text-center section-heading">
-        <span className="section-heading-underline">Genres</span>
-      </h2>
+    <ResourceContainer heading="Genres">
       <div className="row">
         <div className="col-md-6 offset-md-3">
-          <div className="card resource-container">
+          <div className="card">
             <ul className="list-group list-group-flush text-center">
               {props.genres.edges.map(({ node }) => (
                 <GenreContainer genre={node} key={node.__dataID__} />
@@ -20,7 +18,7 @@ export function GenresList(props) {
           </div>
         </div>
       </div>
-    </div>
+    </ResourceContainer>
   );
 }
 

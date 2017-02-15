@@ -2,19 +2,17 @@ import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 
 import BookContainer from './Book';
+import ResourceContainer from '../Common/ResourceContainer';
 
 export function BooksList(props) {
   return (
-    <div className="col-sm-12">
-      <h2 className="text-center section-heading">
-        <span className="section-heading-underline">Books</span>
-      </h2>
-      <div className="card-columns resource-container">
+    <ResourceContainer heading="Books">
+      <div className="card-columns">
         {props.books.edges.map(({ node }) => (
           <BookContainer book={node} key={node.__dataID__} />
         ))}
       </div>
-    </div>
+    </ResourceContainer>
   );
 }
 

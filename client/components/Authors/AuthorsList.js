@@ -2,16 +2,14 @@ import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 
 import AuthorContainer from './Author';
+import ResourceContainer from '../Common/ResourceContainer';
 
 export function AuthorList(props) {
   return (
-    <div className="col-sm-12">
-      <h2 className="text-center section-heading">
-        <span className="section-heading-underline">Authors</span>
-      </h2>
+    <ResourceContainer heading="Authors">
       <div className="row">
         <div className="col-md-6 offset-md-3">
-          <div className="card resource-container">
+          <div className="card">
             <ul className="list-group list-group-flush text-center">
               {props.authors.edges.map(({ node }) => (
                 <AuthorContainer author={node} key={node.__dataID__} />
@@ -20,7 +18,7 @@ export function AuthorList(props) {
           </div>
         </div>
       </div>
-    </div>
+    </ResourceContainer>
   );
 }
 
