@@ -7,12 +7,14 @@ export default function createLabelContainerFor({
   type, // container type, e.g genres, authors
   getRelayQuery, // () => Relay.QL`` - Function that'll be called to get query.
   labelName, // e.g Author, Genre
+  baseUrl = `/${type}`,
 }) {
   function TypeLabels({ [type]: types }) {
     const items = types.edges.map(({ node }) => node);
 
     return (
       <Labels
+        baseUrl={baseUrl}
         items={items}
       />
     );

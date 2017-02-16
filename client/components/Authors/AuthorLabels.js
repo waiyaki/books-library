@@ -17,4 +17,5 @@ export default createLabelContainerFor({
   type: 'authors',
   getRelayQuery,
   labelName: 'Author',
+  baseUrl: '/authors',
 });
