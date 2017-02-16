@@ -77,7 +77,7 @@ export const setGenres = genreIds => async (book) => {
 };
 
 
-const constructIncludeQuery = (model, includeAs, id = null) => {
+export const constructIncludeQuery = (model, includeAs, id = null) => {
   const query = {
     model,
     as: includeAs,
@@ -96,26 +96,6 @@ const constructIncludeQuery = (model, includeAs, id = null) => {
 
   return query;
 };
-
-
-export function constructBookQuery(args) {
-  let { genreId, authorId } = args;
-  if (genreId) {
-    genreId = fromGlobalId(genreId).id;
-  }
-  if (authorId) {
-    authorId = fromGlobalId(authorId).id;
-  }
-
-  const query = {
-    include: [
-      constructIncludeQuery(models.Author, 'authors', authorId),
-      constructIncludeQuery(models.Genre, 'genres', genreId),
-    ],
-  };
-
-  return query;
-}
 
 
 export function findGenresWithAuthorId(authorId) {

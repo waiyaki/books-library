@@ -3,14 +3,13 @@ import {
  } from 'graphql';
 
 import { connectionArgs, connectionFromPromisedArray } from 'graphql-relay';
-import { Book, Author } from '../models';
+import models from '../models';
 import {
   NodeField, BookConnection, AuthorConnection, GenreConnection,
 } from './types';
 
 import * as mutations from './mutations';
-import { constructBookQuery } from './helpers';
-import { findGenres } from './loaders';
+import { findGenres, findBooksWithArgs } from './loaders';
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
@@ -29,7 +28,7 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve(_, args) {
         return connectionFromPromisedArray(
-          Book.findAll(constructBookQuery(args)),
+          findBooksWithArgs(args),
           args,
         );
       },
@@ -38,7 +37,7 @@ const RootQuery = new GraphQLObjectType({
       type: AuthorConnection,
       args: connectionArgs,
       resolve(_, args) {
-        return connectionFromPromisedArray(Author.all(), args);
+        return connectionFromPromisedArray(models.Author.all(), args);
       },
     },
     allGenres: {
