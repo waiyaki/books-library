@@ -6,7 +6,7 @@ import ResourceContainer from '../Common/ResourceContainer';
 
 export function GenresList(props) {
   return (
-    <ResourceContainer heading="Genres">
+    <ResourceContainer title="Genres">
       <div className="row">
         <div className="col-md-6 offset-md-3">
           <div className="card">

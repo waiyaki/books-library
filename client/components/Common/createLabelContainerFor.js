@@ -6,10 +6,7 @@ import Labels from './Labels';
 export default function createLabelContainerFor({
   type, // container type, e.g genres, authors
   getRelayQuery, // () => Relay.QL`` - Function that'll be called to get query.
-  labelName: {
-    singular,
-    plural,
-  },
+  labelName, // e.g Author, Genre
 }) {
   function TypeLabels({ [type]: types }) {
     const items = types.edges.map(({ node }) => node);
@@ -17,10 +14,6 @@ export default function createLabelContainerFor({
     return (
       <Labels
         items={items}
-        labelName={{
-          singular,
-          plural,
-        }}
       />
     );
   }
@@ -33,7 +26,7 @@ export default function createLabelContainerFor({
     }).isRequired,
   };
 
-  TypeLabels.displayName = `${singular}Labels` || TypeLabels.name;
+  TypeLabels.displayName = `${labelName}Labels` || TypeLabels.name;
 
   return Relay.createContainer(TypeLabels, {
     fragments: {

@@ -6,7 +6,7 @@ import ResourceContainer from '../Common/ResourceContainer';
 
 export function BookDetails(props) {
   return (
-    <ResourceContainer heading="Book Details">
+    <ResourceContainer title="Book Details">
       <div className="row">
         <div className="col-md-8 offset-md-2">
           <BookContainer {...props} />

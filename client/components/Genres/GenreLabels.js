@@ -16,8 +16,5 @@ const getRelayQuery = () => Relay.QL`
 export default createLabelContainerFor({
   type: 'genres',
   getRelayQuery,
-  labelName: {
-    singular: 'Genre',
-    plural: 'Genres',
-  },
+  labelName: 'Genre',
 });

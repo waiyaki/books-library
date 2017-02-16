@@ -16,8 +16,5 @@ const getRelayQuery = () => Relay.QL`
 export default createLabelContainerFor({
   type: 'authors',
   getRelayQuery,
-  labelName: {
-    singular: 'Author',
-    plural: 'Authors',
-  },
+  labelName: 'Author',
 });

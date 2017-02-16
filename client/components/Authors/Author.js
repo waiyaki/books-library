@@ -1,10 +1,12 @@
 import React from 'react';
 import Relay from 'react-relay';
 
+import ResourceLink from '../Common/ResourceLink';
+
 export function Author({ author }) {
   return (
     <li className="list-group-item">
-      {author.name}
+      <ResourceLink to={`/authors/${author.id}`}>{author.name}</ResourceLink>
     </li>
   );
 }

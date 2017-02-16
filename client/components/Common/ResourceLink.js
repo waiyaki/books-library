@@ -13,5 +13,5 @@ export default function ResourceLink({ to, children }) {
 
 ResourceLink.propTypes = {
   to: React.PropTypes.string.isRequired,
-  children: React.PropTypes.element.isRequired,
+  children: React.PropTypes.node.isRequired,
 };

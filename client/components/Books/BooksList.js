@@ -6,10 +6,12 @@ import ResourceContainer from '../Common/ResourceContainer';
 
 export function BooksList(props) {
   return (
-    <ResourceContainer heading="Books">
-      <div className="card-columns">
+    <ResourceContainer title="Books">
+      <div className="row">
         {props.books.edges.map(({ node }) => (
-          <BookContainer book={node} key={node.__dataID__} />
+          <div className="col-sm-12 col-md-8 offset-md-2 offset-lg-0 col-lg-4 book-card" key={node.__dataID__}>
+            <BookContainer book={node} />
+          </div>
         ))}
       </div>
     </ResourceContainer>

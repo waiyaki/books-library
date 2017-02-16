@@ -1,11 +1,15 @@
-.resource-container {
-  margin: 0 1em;
-}
-
 .section-heading {
   font-size: 3em;
   font-weight: 200;
   margin-bottom: 0.6em;
+}
+
+.section-heading-mid {
+  font-size: 2.2em;
+}
+
+.section-heading-small {
+  font-size: 1em;
 }
 
 .section-heading-underline {
